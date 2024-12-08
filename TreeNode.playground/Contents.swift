@@ -43,27 +43,35 @@ func inorderTraversal(_ root: TreeNode?) -> [Int] {
     var current = root
     
     while current != nil || !stack.isEmpty {
+        
+        //Добавляем root и все левые узлы
         while current != nil {
             stack.append(current!)
             current = current?.left
         }
-        
+       
+        ///Берем последний элемент из стека
         current = stack.removeLast()
-        result.append(current!.val)
-        current = current?.right
+        result.append(current!.val) //добавляем его значение
+        current = current?.right // и переходим на правый
     }
     
     return result
 }
+//MARK: - РУТ всегда будет отщелкиваться последним
 
 // Пример использования:
 
 let root = TreeNode(1)
 root.right = TreeNode(2)
 root.right?.left = TreeNode(3)
+root.right?.right = TreeNode(4)
+root.right?.right?.left = TreeNode(5)
+root.right?.right?.left?.right = TreeNode(6)
+
 
 let result = inorderTraversal(root)
-print(result) // [1, 3, 2]
+print(result) 
 
 public func levelOrder(_ root: TreeNode?) -> [[Int]] {
     guard let root = root else { return [] }
@@ -75,16 +83,20 @@ public func levelOrder(_ root: TreeNode?) -> [[Int]] {
         var currentLevel: [Int] = []
         let levelSize = queue.count
         
-        for _ in 0..<levelSize {
+        
+        for i in 0..<levelSize {
+            
+            print(i) //0 0 0 1 0 0
+            
             let node = queue.removeFirst()
             currentLevel.append(node.val)
             
             if let leftNode = node.left {
-                queue.append(leftNode)
+                queue.append(leftNode)///тут то queue - мы добавляем данные на след итерацию
             }
             
             if let rightNode = node.right {
-                queue.append(rightNode)
+                queue.append(rightNode)///тут то queue - мы добавляем данные на след итерацию
             }
         }
         
@@ -93,3 +105,6 @@ public func levelOrder(_ root: TreeNode?) -> [[Int]] {
     
     return result
 }
+
+
+print(levelOrder(root)) // [[1], [2], [3, 4], [5], [6]]
