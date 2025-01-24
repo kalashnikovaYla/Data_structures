@@ -246,3 +246,169 @@ func isPalindrome(head: ListNode?) -> Bool {
     
     return linkedListVals == linkedListVals.reversed()
 }
+
+func hasCycle(_ head: ListNode?) -> Bool {
+    var slow = head
+    var fast = head
+
+    while fast != nil && fast?.next != nil {
+        // Ходим на 1 шаг
+        slow = slow?.next
+        // Ходим на 2 шага
+        fast = fast?.next?.next
+        // Если встретились, значит есть цикл
+        if slow === fast {
+            return true
+        }
+    }
+    // Если fast дошел до конца, значит цикла нет
+    return false
+}
+
+
+func getIntersectionNode(_ headA: ListNode?, _ headB: ListNode?) -> ListNode? {
+    if headA == nil || headB == nil {
+        return nil
+    }
+    
+    var pointerA: ListNode? = headA
+    var pointerB: ListNode? = headB
+    
+    
+    while pointerA !== pointerB {
+        if pointerA == nil {
+            pointerA = headB
+        } else {
+            pointerA = pointerA?.next
+        }
+        
+        if pointerB == nil {
+            pointerB = headA 
+        } else {
+            pointerB = pointerB?.next
+        }
+    }
+    
+    return pointerA
+}
+
+
+func removeElements(_ head: ListNode?, _ val: Int) -> ListNode? {
+    let dummy = ListNode(0)
+    dummy.next = head
+    
+    var current: ListNode? = dummy
+    
+    while current?.next != nil {
+        if current?.next?.val == val {
+            current?.next = current?.next?.next
+        } else {
+            current = current?.next
+        }
+    }
+    
+    return dummy.next
+}
+
+func getDecimalValue(_ head: ListNode?) -> Int {
+    var result = 0
+    var head = head
+    
+    while head != nil {
+        result = result * 2 + head!.val
+        head = head?.next
+    }
+    
+    return result
+}
+
+
+func fromIntToDecimal(nums: [Int]) -> Int {
+    var decimal = 0
+    var base = 1
+    
+    for digit in nums {
+        if digit != 0 && digit != 1 {
+            return 0
+        }
+    }
+    
+    for digit in nums.reversed() {
+        if digit == 1 {
+            decimal += base
+        }
+        base *= 2
+    }
+    
+    return decimal
+}
+
+func getDecimal(_ head: ListNode?) -> Int {
+    var decimal = 0
+    var base = 1
+    var head = head
+    var queue: [Int] = []
+    
+    
+    while head != nil {
+        queue.append(head!.val)
+        head = head?.next
+    }
+    
+    for digit in queue.reversed() {
+        if digit == 1 {
+            decimal += base
+        }
+        base *= 2
+    }
+    
+    return decimal
+}
+
+//MARK: 148 Sort list - Given the head of a linked list, return the list after sorting it in ascending order.
+
+
+func sortList(_ head: ListNode?) -> ListNode? {
+    if head == nil {
+        return nil
+    }
+    
+    var curr = head
+    
+    var array: [Int] = []
+    while curr != nil {
+        array.append(curr!.val)
+        curr = curr?.next
+    }
+    let sortedQueue = quicksort(array)
+    
+    var dummy: ListNode? = ListNode(0)
+    var result = dummy
+    for i in sortedQueue {
+        dummy?.next = ListNode(i)
+        dummy = dummy?.next
+    }
+    return result?.next
+}
+
+func quicksort<T: Comparable>(_ array: [T]) -> [T] {
+    
+    guard array.count > 1 else {
+        return array
+    }
+ 
+    let pivot = array[array.count / 2]
+ 
+    let less = array.filter { $0 < pivot }
+    let equal = array.filter { $0 == pivot }
+    let greater = array.filter { $0 > pivot }
+
+    return quicksort(less) + equal + quicksort(greater)
+}
+
+
+let third = ListNode(3)
+let second = ListNode(2, third)
+let first = ListNode(4, second)
+
+sortList(first)
