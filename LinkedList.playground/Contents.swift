@@ -380,7 +380,7 @@ func sortList(_ head: ListNode?) -> ListNode? {
         array.append(curr!.val)
         curr = curr?.next
     }
-    let sortedQueue = quicksort(array)
+    let sortedQueue = array.sorted()
     
     var dummy: ListNode? = ListNode(0)
     var result = dummy
@@ -389,21 +389,6 @@ func sortList(_ head: ListNode?) -> ListNode? {
         dummy = dummy?.next
     }
     return result?.next
-}
-
-func quicksort<T: Comparable>(_ array: [T]) -> [T] {
-    
-    guard array.count > 1 else {
-        return array
-    }
- 
-    let pivot = array[array.count / 2]
- 
-    let less = array.filter { $0 < pivot }
-    let equal = array.filter { $0 == pivot }
-    let greater = array.filter { $0 > pivot }
-
-    return quicksort(less) + equal + quicksort(greater)
 }
 
 
