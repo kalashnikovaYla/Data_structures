@@ -85,9 +85,6 @@ public func levelOrder(_ root: TreeNode?) -> [[Int]] {
         
         
         for i in 0..<levelSize {
-            
-            print(i) //0 0 0 1 0 0
-            
             let node = queue.removeFirst()
             currentLevel.append(node.val)
             
@@ -108,3 +105,193 @@ public func levelOrder(_ root: TreeNode?) -> [[Int]] {
 
 
 print(levelOrder(root)) // [[1], [2], [3, 4], [5], [6]]
+
+///104: Maximum Depth binary tree
+///Given the root of a binary tree, return its maximum depth. A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+func maxDepth(_ root: TreeNode?) -> Int {
+    
+    guard let node = root else {
+        return 0
+    }
+    
+    let leftDepth = maxDepth(node.left)
+    let rightDepth = maxDepth(node.right)
+    
+    return max(leftDepth, rightDepth) + 1
+}
+
+
+class BinarySearchTree {
+    var root: TreeNode?
+
+    
+    func insert(value: Int) {
+        let newNode = TreeNode(value)
+        if let rootNode = root {
+            insertRecursively(node: rootNode, newNode: newNode)
+        } else {
+            root = newNode
+        }
+    }
+    
+    private func insertRecursively(node: TreeNode, newNode: TreeNode) {
+        if newNode.val < node.val {
+            if let leftNode = node.left {
+                insertRecursively(node: leftNode, newNode: newNode)
+            } else {
+                node.left = newNode
+            }
+        } else {
+            if let rightNode = node.right {
+                insertRecursively(node: rightNode, newNode: newNode)
+            } else {
+                node.right = newNode
+            }
+        }
+    }
+    
+    func printTree() {
+        printTreeRecursively(node: root)
+    }
+    
+    private func printTreeRecursively(node: TreeNode?) {
+        guard let node = node else { return }
+        printTreeRecursively(node: node.left)
+        print(node.val)
+        printTreeRecursively(node: node.right)
+    }
+
+    func delete(_ key: Int) {
+        root = deleteRec(root, key)
+    }
+
+    private func deleteRec(_ node: TreeNode?, _ key: Int) -> TreeNode? {
+        guard let node = node else {
+            return nil
+        }
+
+        if key < node.val {
+            node.left = deleteRec(node.left, key)
+        } else if key > node.val {
+            node.right = deleteRec(node.right, key)
+        } else {
+            // Удаление узла
+            if node.left == nil {
+                return node.right
+            } else if node.right == nil {
+                return node.left
+            }
+            
+            // Узел с двумя потомками: получить inorder преемника (минимальный узел в правом поддереве)
+            node.val = minValueNode(node.right!).val
+            node.right = deleteRec(node.right, node.val)
+        }
+        
+        return node
+    }
+    
+    private func minValueNode(_ node: TreeNode) -> TreeNode {
+        var current = node
+        while let left = current.left {
+            current = left
+        }
+        return current
+    }
+}
+
+
+func isValidBST(root: TreeNode?) -> Bool {
+    return isBSTHelper(node: root, min: nil, max: nil)
+}
+
+func isBSTHelper(node: TreeNode?, min: Int?, max: Int?) -> Bool {
+     
+    guard let node = node else {
+        return true
+    }
+  
+    if let min = min, node.val <= min {
+        return false
+    }
+    if let max = max, node.val >= max {
+        return false
+    }
+ 
+    return isBSTHelper(node: node.left, min: min, max: node.val) &&
+           isBSTHelper(node: node.right, min: node.val, max: max)
+}
+
+
+func isValidBST(_ root: TreeNode?) -> Bool {
+    var stack: [TreeNode] = []
+    var currentNode = root
+    var previousValue: Int? = nil
+    
+    while !stack.isEmpty || currentNode != nil {
+         
+        while currentNode != nil {
+            stack.append(currentNode!)
+            currentNode = currentNode?.left
+        }
+        
+        currentNode = stack.removeLast()
+        
+        
+        if let prev = previousValue, currentNode!.val <= prev {
+            return false
+        }
+        
+        previousValue = currentNode!.val
+        currentNode = currentNode?.right
+    }
+    
+    return true
+}
+
+
+//MARK: 101 Symmetric tree
+func isSymmetric(_ root: TreeNode?) -> Bool {
+    return symmetric(left: root?.left, right: root?.right)
+}
+
+func symmetric(left: TreeNode?, right: TreeNode?) -> Bool {
+    if left == nil && right == nil {
+        return true
+    }
+    
+    if left == nil || right == nil {
+        return false
+    }
+    
+    return left?.val == right?.val && symmetric(left: left?.left, right: right?.right) && symmetric(left: left?.right, right: right?.left)
+}
+
+
+func isSymmetric(root: TreeNode?) -> Bool {
+    guard let root = root else { return true }
+    
+    var queue: [(TreeNode?, TreeNode?)] = [(root.left, root.right)]
+
+    while !queue.isEmpty {
+        let (left, right) = queue.removeFirst()
+        
+        if left == nil && right == nil {
+            continue
+        }
+        
+        if left == nil || right == nil {
+            return false
+        }
+       
+        
+        if left!.val != right!.val {
+            return false
+        }
+         
+        queue.append((left!.left, right!.right))
+        queue.append((left!.right, right!.left))
+    }
+
+    return true
+}
