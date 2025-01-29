@@ -50,15 +50,13 @@ func merge<T: Comparable>(_ left: [T], _ right: [T]) -> [T] {
         mergedArray.append(left[leftIndex])
         leftIndex += 1
     }
-
-    // Если остались элементы в правой части, добавляем их
     while rightIndex < right.count {
         mergedArray.append(right[rightIndex])
-        rightIndex += 1
     }
-    
     return mergedArray
 }
+
+
 
 // Пример использования
 let unsortedArray = [6,4,3,2,8,9]

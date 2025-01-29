@@ -407,3 +407,70 @@ func rangeSumBST(root: TreeNode?, _ low: Int, _ high: Int) -> Int {
     return sum
 }
 
+func isCousins(_ root: TreeNode?, _ x: Int, _ y: Int) -> Bool {
+    guard let root = root else { return false }
+    
+    var queue: [(node: TreeNode, parent: TreeNode?)] = [(root, nil)]
+    var foundX: (parent: TreeNode?, depth: Int)? = nil
+    var foundY: (parent: TreeNode?, depth: Int)? = nil
+    
+    var depth = 0
+    while !queue.isEmpty {
+        var size = queue.count
+        for _ in 0..<size {
+            let (node, parent) = queue.removeFirst()
+            
+            if node.val == x {
+                foundX = (parent, depth)
+            }
+            if node.val == y {
+                foundY = (parent, depth)
+            }
+            
+            if foundX != nil && foundY != nil {
+                break
+            }
+            
+            if let left = node.left {
+                queue.append((left, node))
+            }
+            if let right = node.right {
+                queue.append((right, node))
+            }
+        }
+        
+        if foundX != nil && foundY != nil {
+            break
+        }
+        depth += 1
+    }
+    
+    if let xData = foundX, let yData = foundY {
+        return xData.parent !== yData.parent && xData.depth == yData.depth
+    }
+    
+    return false
+}
+
+
+func minDepth(_ root: TreeNode?) -> Int {
+    guard let root = root else {return 0}
+    var minDepth = 1
+    var queue: [TreeNode] = [root]
+    while !queue.isEmpty {
+        for i in 0..<queue.count {
+            let el = queue.removeFirst()
+            if el.left == nil && el.right == nil {
+                return minDepth
+            }
+            if let l = el.left {
+                queue.append(l)
+            }
+            if let r = el.right {
+                queue.append(r)
+            }
+        }
+        minDepth += 1
+    }
+    return minDepth
+}
