@@ -295,3 +295,115 @@ func isSymmetric(root: TreeNode?) -> Bool {
 
     return true
 }
+
+
+func sortedArrayToBST(_ nums: [Int]) -> TreeNode? {
+    if nums.isEmpty {
+        return nil
+    }
+    let middle = nums.count / 2
+    let dummy = TreeNode(nums[middle])
+    let left = Array(nums[0..<middle])
+    dummy.left = sortedArrayToBST(left)
+    let right = Array(nums[(middle + 1)..<nums.count])
+    dummy.right = sortedArrayToBST(right)
+    return dummy
+}
+
+sortedArrayToBST([-10, 4,5,8])
+
+
+func sortedArrayToBST(nums: [Int]) -> TreeNode? {
+    // Используем стек для итеративного подхода
+    var stack: [(Int, Int)] = [] // храним пары (левый индекс, правый индекс)
+    var root: TreeNode?
+    
+    // Инициализируем стек с полными границами массива
+    stack.append((0, nums.count - 1))
+
+    while !stack.isEmpty {
+        let (left, right) = stack.removeLast()
+
+        // Когда левый индекс больше правого, ничего не добавляем
+        if left > right {
+            continue
+        }
+
+        // Находим средний индекс
+        let mid = (left + right) / 2
+        // Создаем новый узел дерева с элементом среднего индекса
+        let node = TreeNode(nums[mid])
+        
+        // Если это первый узел, то он корень дерева
+        if root == nil {
+            root = node
+        } else {
+            // Вставляем новый узел в дерево
+            var current: TreeNode? = root
+            while true {
+                if nums[mid] < current!.val {
+                    if current!.left == nil {
+                        current!.left = node
+                        break
+                    } else {
+                        current = current!.left
+                    }
+                } else {
+                    if current!.right == nil {
+                        current!.right = node
+                        break
+                    } else {
+                        current = current!.right
+                    }
+                }
+            }
+        }
+
+        // Добавляем новые границы для левой и правой части
+        stack.append((left, mid - 1)) // Левый подмассив
+        stack.append((mid + 1, right)) // Правый подмассив
+    }
+
+    return root
+}
+
+
+func rangeSumBST(_ root: TreeNode?, _ low: Int, _ high: Int) -> Int {
+    var current = root
+    var stack: [TreeNode] = []
+    var sum = 0
+    while !stack.isEmpty || current != nil {
+        while current != nil {
+            stack.append(current!)
+            current = current?.left
+        }
+        
+        current = stack.popLast()
+        if let val = current?.val, val >= low && val <= high {
+            sum += val
+        }
+        current = current?.right
+    }
+    return sum
+}
+ 
+func rangeSumBST(root: TreeNode?, _ low: Int, _ high: Int) -> Int {
+    guard let root = root else { return 0 }
+    
+    var sum = 0
+    
+    if root.val >= low && root.val <= high {
+        sum += root.val
+    }
+    
+    if root.val > low {
+        sum += rangeSumBST(root.left, low, high)
+    }
+    
+    if root.val < high {
+        sum += rangeSumBST(root.right, low, high)
+    }
+    
+    return sum
+}
+
