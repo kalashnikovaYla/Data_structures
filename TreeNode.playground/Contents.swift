@@ -474,3 +474,49 @@ func minDepth(_ root: TreeNode?) -> Int {
     }
     return minDepth
 }
+
+
+func hasPathSum(_ root: TreeNode?, _ targetSum: Int) -> Bool {
+    guard let node = root else {
+        return false
+    }
+    
+    let newTargetSum = targetSum - node.val
+    
+    if node.left == nil && node.right == nil {
+        return newTargetSum == 0
+    }
+    
+    return hasPathSum(node.left, newTargetSum) || hasPathSum(node.right, newTargetSum)
+}
+
+
+
+func hasPathSum(root: TreeNode?, _ targetSum: Int) -> Bool {
+    guard let root = root else {
+        return targetSum == 0
+    }
+
+    var stack: [(TreeNode, Int)] = []
+    stack.append((root, targetSum - root.val))
+
+    while !stack.isEmpty {
+        let (node, currentSum) = stack.removeLast()
+        
+        if node.left == nil && node.right == nil {
+            if currentSum == 0 {
+                return true
+            }
+        }
+        
+        if let right = node.right {
+            stack.append((right, currentSum - right.val))
+        }
+        
+        if let left = node.left {
+            stack.append((left, currentSum - left.val))
+        }
+    }
+    
+    return false
+}
