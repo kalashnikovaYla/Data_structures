@@ -58,6 +58,62 @@ func inorderTraversal(_ root: TreeNode?) -> [Int] {
     
     return result
 }
+
+func postOrderTraversal(_ node: TreeNode?) {
+    guard let node = node else { return }
+    
+    // Рекурсивный обход левого поддерева
+    postOrderTraversal(node.left)
+    
+    // Рекурсивный обход правого поддерева
+    postOrderTraversal(node.right)
+    
+    // Обработка узла (вывод значения)
+    print(node.val)
+}
+
+
+func preorderTraversal(root: TreeNode?) -> [Int] {
+    var result = [Int]()
+    var stack = [TreeNode]()
+    
+    if let root = root {
+        stack.append(root)
+    }
+    
+    while !stack.isEmpty {
+        let node = stack.removeLast()
+        result.append(node.val)
+        
+        
+        if let right = node.right {
+            stack.append(right)
+        }
+        if let left = node.left {
+            stack.append(left)
+        }
+    }
+    
+    return result
+    
+}
+
+func preorderTraversal(_ root: TreeNode?) -> [Int] {
+    var result: [Int] = []
+    dfs(root)
+    
+    func dfs(_ node: TreeNode?) {
+        guard let node = node else { return }
+        
+        result.append(node.val)
+        dfs(node.left)
+        dfs(node.right)
+    }
+    
+    return result
+}
+
+
 //MARK: - РУТ всегда будет отщелкиваться последним
 
 // Пример использования:
