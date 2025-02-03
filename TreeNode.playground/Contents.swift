@@ -59,17 +59,15 @@ func inorderTraversal(_ root: TreeNode?) -> [Int] {
     return result
 }
 
-func postOrderTraversal(_ node: TreeNode?) {
-    guard let node = node else { return }
+func postOrderTraversal(node: TreeNode?) -> [Int] {
+
+    guard let node = node else { return [] }
     
-    // Рекурсивный обход левого поддерева
-    postOrderTraversal(node.left)
     
-    // Рекурсивный обход правого поддерева
-    postOrderTraversal(node.right)
+    let leftValues = postOrderTraversal(node: node.left)
+    let rightValues = postOrderTraversal(node: node.right)
     
-    // Обработка узла (вывод значения)
-    print(node.val)
+    return leftValues + rightValues + [node.val]
 }
 
 
@@ -113,22 +111,6 @@ func preorderTraversal(_ root: TreeNode?) -> [Int] {
     return result
 }
 
-
-//MARK: - РУТ всегда будет отщелкиваться последним
-
-// Пример использования:
-
-let root = TreeNode(1)
-root.right = TreeNode(2)
-root.right?.left = TreeNode(3)
-root.right?.right = TreeNode(4)
-root.right?.right?.left = TreeNode(5)
-root.right?.right?.left?.right = TreeNode(6)
-
-
-let result = inorderTraversal(root)
-print(result) 
-
 public func levelOrder(_ root: TreeNode?) -> [[Int]] {
     guard let root = root else { return [] }
     
@@ -158,9 +140,6 @@ public func levelOrder(_ root: TreeNode?) -> [[Int]] {
     
     return result
 }
-
-
-print(levelOrder(root)) // [[1], [2], [3, 4], [5], [6]]
 
 ///104: Maximum Depth binary tree
 ///Given the root of a binary tree, return its maximum depth. A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
@@ -613,5 +592,68 @@ private func dfs(_ node: TreeNode?, currentValue: Int) -> Int {
 
 func sumRootToLeaf(_ root: TreeNode?) -> Int {
     return dfs(root, currentValue: 0)
+}
+
+
+
+let root = TreeNode(4)
+root.left = TreeNode(3)
+root.right = TreeNode(8)
+root.right?.right = TreeNode(9)
+root.right?.left = TreeNode(7)
+root.left?.left = TreeNode(1)
+root.left?.right = TreeNode(2)
+root.left?.left?.left = TreeNode(0)
+let result = postOrderTraversal(node: root)
+//print(result)
+
+
+func isBalanced(_ root: TreeNode?) -> Bool {
+    
+    
+    func isBalanced(_ root: TreeNode?) -> Bool {
+        guard let root = root else { return true }
+        
+        
+        if abs(maxDepth(root: root.left) - maxDepth(root: root.right)) > 1 {
+            return false
+        } else {
+            return isBalanced(root.left) && isBalanced(root.right)
+        }
+    }
+    
+    return isBalanced(root)
+}
+
+func maxDepth(root: TreeNode?) -> Int {
+    guard let root = root else { return 0 }
+    return 1 + max(maxDepth(root.left), maxDepth(root.right))
+}
+
+
+func isBalanced(root: TreeNode?) -> Bool {
+    return checkHeight(root) != -1
+}
+
+private func checkHeight(_ node: TreeNode?) -> Int {
+    guard let node = node else {
+        return 0
+    }
+    
+    let leftHeight = checkHeight(node.left)
+    if leftHeight == -1 {
+        return -1
+    }
+
+    let rightHeight = checkHeight(node.right)
+    if rightHeight == -1 {
+        return -1
+    }
+
+    if abs(leftHeight - rightHeight) > 1 {
+        return -1
+    }
+
+    return max(leftHeight, rightHeight) + 1
 }
 
