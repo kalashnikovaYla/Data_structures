@@ -56,9 +56,7 @@ func merge<T: Comparable>(_ left: [T], _ right: [T]) -> [T] {
     return mergedArray
 }
 
-
-
-// Пример использования
+ 
 let unsortedArray = [6,4,3,2,8,9]
 let sortedArray = mergeSort(unsortedArray)
 
@@ -80,3 +78,32 @@ func insertionSort(array: inout [Int]) {
 
 //var nums = [6,4,3,2]
 //insertionSort(array: &nums)
+
+
+func bubbleSort(_ array: inout [Int]) {
+    let n = array.count
+    
+    for i in 0..<n {
+        var swapped = false
+       
+        for j in 0..<n - i - 1 {
+            if array[j] > array[j + 1] {
+                // Используем временную переменную для хранения значения
+                let temp = array[j]
+                array[j] = array[j + 1]
+                array[j + 1] = temp
+                swapped = true
+            }
+        }
+        // Если на этом этапе не произошло обменов, массив уже отсортирован
+        if !swapped { 
+            break
+        }
+    }
+}
+
+var numbers = [64, 34, 25, 12, 22, 11, 90]
+bubbleSort(&numbers)
+print(numbers)  // Вывод: [11, 12, 22, 25, 34, 64, 90]
+ 
+  
