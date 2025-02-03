@@ -657,3 +657,31 @@ private func checkHeight(_ node: TreeNode?) -> Int {
     return max(leftHeight, rightHeight) + 1
 }
 
+func countNodes(_ root: TreeNode?) -> Int {
+    var current = root
+    var res = 0
+    var stack = [TreeNode]()
+    if let root = root {
+        stack.append(root)
+    }
+    while !stack.isEmpty {
+        let el = stack.removeLast()
+        res += 1
+        
+        if let right = el.right {
+            stack.append(right)
+        }
+        if let left = current?.left {
+            stack.append(left)
+        }
+    }
+    return res
+}
+ 
+func countNodes(root: TreeNode?) -> Int {
+    if root == nil {
+        return 0
+    }
+    
+    return countNodes(root?.left) + countNodes(root?.right) + 1
+}
