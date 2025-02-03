@@ -576,3 +576,42 @@ func hasPathSum(root: TreeNode?, _ targetSum: Int) -> Bool {
     
     return false
 }
+
+
+func getMinimumDifference(_ root: TreeNode?) -> Int {
+    var values = [Int]()
+    inorderTraversal(root, &values)
+    
+    var minDiff = Int.max
+    
+    for i in 1..<values.count {
+        let diff = values[i] - values[i - 1]
+        minDiff = min(minDiff, diff)
+    }
+    
+    return minDiff
+}
+private func inorderTraversal(_ node: TreeNode?, _ values: inout [Int]) {
+    guard let node = node else { return }
+    
+    inorderTraversal(node.left, &values)
+    values.append(node.val)
+    inorderTraversal(node.right, &values)
+}
+
+private func dfs(_ node: TreeNode?, currentValue: Int) -> Int {
+    guard let node = node else {
+        return 0
+    }
+    let newValue = (currentValue << 1) | node.val
+
+    if node.left == nil && node.right == nil {
+        return newValue
+    }
+    return dfs(node.left, currentValue: newValue) + dfs(node.right, currentValue: newValue)
+}
+
+func sumRootToLeaf(_ root: TreeNode?) -> Int {
+    return dfs(root, currentValue: 0)
+}
+
