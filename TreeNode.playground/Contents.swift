@@ -17,99 +17,7 @@ public class TreeNode {
     }
 }
 
-func isSameTree(_ p: TreeNode?, _ q: TreeNode?) -> Bool {
-    // Проверяем, являются ли оба узла nil.
-    if p == nil && q == nil {
-        return true
-    }
-    
-    // Проверяем, являются ли оба узла непустыми.
-    guard let p = p, let q = q else {
-        return false
-    }
-    
-    // Проверяем значения узлов.
-    if p.val != q.val {
-        return false
-    }
-    
-    // Рекурсивно вызываем функцию для проверки левых и правых поддеревьев.
-    return isSameTree(p.left, q.left) && isSameTree(p.right, q.right)
-}
-
-func inorderTraversal(_ root: TreeNode?) -> [Int] {
-    var result: [Int] = []
-    var stack: [TreeNode] = []
-    var current = root
-    
-    while current != nil || !stack.isEmpty {
-        
-        //Добавляем root и все левые узлы
-        while current != nil {
-            stack.append(current!)
-            current = current?.left
-        }
-       
-        ///Берем последний элемент из стека
-        current = stack.removeLast()
-        result.append(current!.val) //добавляем его значение
-        current = current?.right // и переходим на правый
-    }
-    
-    return result
-}
-
-func postOrderTraversal(node: TreeNode?) -> [Int] {
-
-    guard let node = node else { return [] }
-    
-    
-    let leftValues = postOrderTraversal(node: node.left)
-    let rightValues = postOrderTraversal(node: node.right)
-    
-    return leftValues + rightValues + [node.val]
-}
-
-
-func preorderTraversal(root: TreeNode?) -> [Int] {
-    var result = [Int]()
-    var stack = [TreeNode]()
-    
-    if let root = root {
-        stack.append(root)
-    }
-    
-    while !stack.isEmpty {
-        let node = stack.removeLast()
-        result.append(node.val)
-        
-        
-        if let right = node.right {
-            stack.append(right)
-        }
-        if let left = node.left {
-            stack.append(left)
-        }
-    }
-    
-    return result
-    
-}
-
-func preorderTraversal(_ root: TreeNode?) -> [Int] {
-    var result: [Int] = []
-    dfs(root)
-    
-    func dfs(_ node: TreeNode?) {
-        guard let node = node else { return }
-        
-        result.append(node.val)
-        dfs(node.left)
-        dfs(node.right)
-    }
-    
-    return result
-}
+//MARK: Обход дерева через итерации 
 
 public func levelOrder(_ root: TreeNode?) -> [[Int]] {
     guard let root = root else { return [] }
@@ -140,6 +48,106 @@ public func levelOrder(_ root: TreeNode?) -> [[Int]] {
     
     return result
 }
+
+
+func preorderTraversal(root: TreeNode?) -> [Int] {
+    var result = [Int]()
+    var stack = [TreeNode]()
+    
+    if let root = root {
+        stack.append(root)
+    }
+    
+    while !stack.isEmpty {
+        let node = stack.removeLast()
+        result.append(node.val)
+        
+        
+        if let right = node.right {
+            stack.append(right)
+        }
+        if let left = node.left {
+            stack.append(left)
+        }
+    }
+    
+    return result
+    
+}
+
+func inorderTraversal(_ root: TreeNode?) -> [Int] {
+    var result: [Int] = []
+    var stack: [TreeNode] = []
+    var current = root
+    
+    while current != nil || !stack.isEmpty {
+        
+        //Добавляем root и все левые узлы
+        while current != nil {
+            stack.append(current!)
+            current = current?.left
+        }
+       
+        ///Берем последний элемент из стека
+        current = stack.removeLast()
+        result.append(current!.val) //добавляем его значение
+        current = current?.right // и переходим на правый
+    }
+    
+    return result
+}
+
+//MARK: Обход в глубину через рекурсию
+func preOrderTraversal(node: TreeNode?) -> [Int] {
+    guard let node = node else { return [] }
+
+    let leftValues = preOrderTraversal(node: node.left)
+    let rightValues = preOrderTraversal(node: node.right)
+    
+    return [node.val] + leftValues + rightValues
+}
+
+func inOrderTraversal(node: TreeNode?) -> [Int] {
+    guard let node = node else { return [] }
+    
+    let leftValues = inOrderTraversal(node: node.left)
+    let rightValues = inOrderTraversal(node: node.right)
+    
+    return leftValues + [node.val] + rightValues
+}
+
+func postOrderTraversal(node: TreeNode?) -> [Int] {
+
+    guard let node = node else { return [] }
+    
+    let leftValues = postOrderTraversal(node: node.left)
+    let rightValues = postOrderTraversal(node: node.right)
+    
+    return leftValues + rightValues + [node.val]
+}
+
+
+//MARK: Отдельные задачи
+func isSameTree(_ p: TreeNode?, _ q: TreeNode?) -> Bool {
+    // Проверяем, являются ли оба узла nil.
+    if p == nil && q == nil {
+        return true
+    }
+    
+    // Проверяем, являются ли оба узла непустыми.
+    guard let p = p, let q = q else {
+        return false
+    }
+    
+    // Проверяем значения узлов.
+    if p.val != q.val {
+        return false
+    }
+    
+    // Рекурсивно вызываем функцию для проверки левых и правых поддеревьев.
+    return isSameTree(p.left, q.left) && isSameTree(p.right, q.right)
+}
+
 
 ///104: Maximum Depth binary tree
 ///Given the root of a binary tree, return its maximum depth. A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
