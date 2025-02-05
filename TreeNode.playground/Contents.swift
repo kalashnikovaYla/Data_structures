@@ -693,3 +693,30 @@ func countNodes(root: TreeNode?) -> Int {
     
     return countNodes(root?.left) + countNodes(root?.right) + 1
 }
+
+//MARK: Invert tree
+
+func invertTree(_ root: TreeNode?) -> TreeNode? {
+    var current = root
+    
+    var queue: [TreeNode] = []
+    if let root = current {
+        queue.append(root)
+    }
+    while !queue.isEmpty {
+        let el = queue.removeFirst()
+        
+        let right = el.right
+        let left = el.left
+        el.left = right
+        el.right = left
+        
+        if let right = el.right {
+            queue.append(right)
+        }
+        if let left = el.left {
+            queue.append(left)
+        }
+    }
+    return root
+}
