@@ -14,7 +14,7 @@ class Graph {
         var distances = [String: Int]()
         var priorityQueue = [(node: String, distance: Int)]()
         
-        // Инициализация расстояний.
+       
         for vertex in adjacencyList.keys {
             distances[vertex] = Int.max
         }
