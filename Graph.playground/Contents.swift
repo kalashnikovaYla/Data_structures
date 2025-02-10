@@ -23,9 +23,11 @@ class Graph {
         
         while !priorityQueue.isEmpty {
             
-            priorityQueue.sort { $0.distance < $1.distance }
+            priorityQueue.sort {
+                $0.distance < $1.distance
+            }
             let (currentNode, currentDistance) = priorityQueue.removeFirst()
-            
+
              
             if currentDistance > distances[currentNode]! {
                 continue
