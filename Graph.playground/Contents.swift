@@ -49,15 +49,15 @@ class Graph {
 }
 
 
-let graph = Graph()
-graph.addEdge(from: "A", to: "B", weight: 1)
-graph.addEdge(from: "A", to: "C", weight: 4)
-graph.addEdge(from: "B", to: "C", weight: 2)
-graph.addEdge(from: "B", to: "D", weight: 5)
-graph.addEdge(from: "C", to: "D", weight: 1)
+let graphs = Graph()
+graphs.addEdge(from: "A", to: "B", weight: 1)
+graphs.addEdge(from: "A", to: "C", weight: 4)
+graphs.addEdge(from: "B", to: "C", weight: 2)
+graphs.addEdge(from: "B", to: "D", weight: 5)
+graphs.addEdge(from: "C", to: "D", weight: 1)
 
-let distances = graph.dijkstra(start: "A")
-print(distances)
+let distances = graphs.dijkstra(start: "A")
+//print(distances)
 
 
  
@@ -66,26 +66,6 @@ print(distances)
 ///For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
 ///Return true if you can finish all courses. Otherwise, return false.
 
-
-func canFinish(_ numCourses: Int, _ prerequisites: [[Int]]) -> Bool {
-    var graph = Array(repeating: [Int](), count: numCourses)
-    var visited = Array(repeating: 0, count: numCourses)
-    
-    for prereq in prerequisites {
-        let course = prereq[0]
-        let preCourse = prereq[1]
-        graph[preCourse].append(course)
-    }
-    
-    for course in 0..<numCourses {
-        if !dfs(course, &visited, graph) {
-            return false
-        }
-    }
-    
-    return true
-}
-    
 private func dfs(_ course: Int, _ visited: inout [Int], _ graph: [[Int]]) -> Bool {
     if visited[course] == 1 {
         return false
@@ -106,35 +86,147 @@ private func dfs(_ course: Int, _ visited: inout [Int], _ graph: [[Int]]) -> Boo
     visited[course] = 2
     return true
 }
- 
-class Solution {
-    func canFinish(_ numCourses: Int, _ prerequisites: [[Int]]) -> Bool {
-        var graph = [Int:[Int]](), inDegrees = [Int](), sources = [Int]()
-        //Init
-        for i in 0..<numCourses {
-            graph[i] = [Int]()
-            inDegrees.append(0)
-        }
-        //Fill
-        for p in prerequisites {
-            let par = p[1], c = p[0]
-            graph[par]!.append(c)
-            inDegrees[c] += 1
-        }
 
-        //Get sources
-        for i in 0..<inDegrees.count {
-            if inDegrees[i] == 0 { sources.append(i) }
+func canFinish(_ numCourses: Int, _ prerequisites: [[Int]]) -> Bool {
+    var graph = Array(repeating: [Int](), count: numCourses)
+    var visited = Array(repeating: 0, count: numCourses)
+    
+    for prereq in prerequisites {
+        let course = prereq[0]
+        let preCourse = prereq[1]
+        graph[preCourse].append(course)
+    }
+     
+    
+    for course in 0..<numCourses {
+        if !dfs(course, &visited, graph) {
+            return false
         }
-        var count = 0
-        while sources.count > 0 {
-            let top = sources.removeLast()
-            count += 1
-            for n in graph[top]! {
-                inDegrees[n] -= 1
-                if inDegrees[n] == 0 { sources.append(n) }
+    }
+    
+    return true
+}
+
+canFinish(2, [[0,1], [1,0]])
+    
+
+ 
+ 
+/*
+ There is an undirected star graph consisting of n nodes labeled from 1 to n. A star graph is a graph where there is one center node and exactly n - 1 edges that connect the center node with every other node.
+
+ You are given a 2D integer array edges where each edges[i] = [ui, vi] indicates that there is an edge between the nodes ui and vi. Return the center of the given star graph.
+ */
+
+func findCenter(_ edges: [[Int]]) -> Int {
+    var degreeCount = [Int: Int]()
+    
+    for edge in edges {
+        let u = edge[0]
+        let v = edge[1]
+        
+         
+        degreeCount[u, default: 0] += 1
+        degreeCount[v, default: 0] += 1
+    }
+     
+    let n = edges.count + 1
+    for (vertex, count) in degreeCount {
+        if count == n - 1 {
+            return vertex
+        }
+    }
+     
+    return 0
+}
+
+
+/*
+ There is a bi-directional graph with n vertices, where each vertex is labeled from 0 to n - 1 (inclusive). The edges in the graph are represented as a 2D integer array edges, where each edges[i] = [ui, vi] denotes a bi-directional edge between vertex ui and vertex vi. Every vertex pair is connected by at most one edge, and no vertex has an edge to itself.
+
+ You want to determine if there is a valid path that exists from vertex source to vertex destination.
+
+ Given edges and the integers n, source, and destination, return true if there is a valid path from source to destination, or false otherwise.
+ */
+ 
+func validPath(n: Int, edges: [[Int]], source: Int, destination: Int) -> Bool {
+     
+    var graph = [Int: [Int]]()
+     
+    for edge in edges {
+        let u = edge[0]
+        let v = edge[1]
+        
+        graph[u, default: []].append(v)
+        graph[v, default: []].append(u)
+    }
+    
+    if source == destination {
+        return true
+    }
+    
+    var queue: [Int] = [source]
+    var visited = Set<Int>()
+    visited.insert(source)
+    
+    while !queue.isEmpty {
+        let current = queue.removeFirst()
+        
+         
+        for neighbor in graph[current] ?? [] {
+            if !visited.contains(neighbor) {
+                 
+                if neighbor == destination {
+                    return true
+                }
+                
+                
+                visited.insert(neighbor)
+                queue.append(neighbor)
             }
         }
-        return count == numCourses
+    }
+    return false
+}
+
+ 
+let n = 5
+let edges = [[0, 1], [0, 2], [1, 2], [1, 3], [2, 4]]
+let source = 0
+let destination = 4
+let result = validPath(n: n, edges: edges, source: source, destination: destination)
+
+print(result)
+
+
+class Solution {
+    func validPath(_ n: Int, _ edges: [[Int]], _ source: Int, _ destination: Int) -> Bool {
+        guard n > 2 else {
+            return source == destination
+        }
+        var adjList = Dictionary<Int, Array<Int>>()
+        for edge in edges {
+            let a = edge[0]
+            let b = edge[1]
+            adjList[a, default: []].append(b)
+            adjList[b, default: []].append(a)
+        }
+
+        var visited = Set<Int>()
+        var stack = Array<Int>()
+        stack.append(source)
+        visited.insert(source)
+        while let node = stack.popLast() {
+            for next in adjList[node, default: []] {
+                if next == destination {
+                    return true
+                }
+                let (inserted, _) = visited.insert(next)
+                if inserted {
+                    stack.append(next)
+                }
+            }
+        }
+        return false
     }
 }
