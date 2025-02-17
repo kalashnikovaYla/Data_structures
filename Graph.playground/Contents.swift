@@ -49,14 +49,16 @@ class Graph {
 }
 
 
-let graphs = Graph()
-graphs.addEdge(from: "A", to: "B", weight: 1)
-graphs.addEdge(from: "A", to: "C", weight: 4)
-graphs.addEdge(from: "B", to: "C", weight: 2)
-graphs.addEdge(from: "B", to: "D", weight: 5)
-graphs.addEdge(from: "C", to: "D", weight: 1)
+/*
+ let graphs = Graph()
+ graphs.addEdge(from: "A", to: "B", weight: 1)
+ graphs.addEdge(from: "A", to: "C", weight: 4)
+ graphs.addEdge(from: "B", to: "C", weight: 2)
+ graphs.addEdge(from: "B", to: "D", weight: 5)
+ graphs.addEdge(from: "C", to: "D", weight: 1)
 
-let distances = graphs.dijkstra(start: "A")
+ let distances = graphs.dijkstra(start: "A")
+ */
 //print(distances)
 
 
@@ -230,3 +232,54 @@ class Solution {
         return false
     }
 }
+
+
+/*
+ There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi]indicates that you must take course bi first if you want to take course ai.
+  • For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+ Return the ordering of courses you should take to finish all courses. If there are many valid answers, return any of them. If it is impossible to finish all courses, return an empty array.
+ */
+func findOrder(numCourses: Int, prerequisites: [[Int]]) -> [Int] {
+    var graph = Array(repeating: [Int](), count: numCourses)
+
+    var inDegrees = Array(repeating: 0, count: numCourses)
+
+    for prereq in prerequisites {
+        let course = prereq[0]
+        let preCourse = prereq[1]
+        graph[preCourse].append(course)
+        inDegrees[course] += 1
+    }
+
+    var queue: [Int] = []
+    for i in 0..<numCourses {
+        if inDegrees[i] == 0 {
+            queue.append(i)
+        }
+    }
+
+    var order: [Int] = []
+
+    while !queue.isEmpty {
+        let course = queue.removeFirst()
+        order.append(course)
+        
+        // Reduce the in-degree of neighboring nodes
+        for neighbor in graph[course] {
+            inDegrees[neighbor] -= 1
+            // If in-degree is zero, add to queue
+            if inDegrees[neighbor] == 0 {
+                queue.append(neighbor)
+            }
+        }
+    }
+
+    
+    return order.count == numCourses ? order : []
+}
+
+// Example usage:
+let numCourses = 4
+let prerequisites = [[0, 1], [0, 2], [1, 3], [2, 3]]
+let order = findOrder(numCourses: numCourses, prerequisites: prerequisites)
+print(order)
