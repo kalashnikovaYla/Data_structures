@@ -283,3 +283,48 @@ let numCourses = 4
 let prerequisites = [[0, 1], [0, 2], [1, 3], [2, 3]]
 let order = findOrder(numCourses: numCourses, prerequisites: prerequisites)
 print(order)
+
+
+
+ 
+public class Node {
+    public var val: Int
+    public var neighbors: [Node?]
+    public init(_ val: Int) {
+        self.val = val
+        self.neighbors = []
+    }
+}
+ 
+
+ 
+func cloneGraph(_ node: Node?) -> Node? {
+    guard let node = node else {
+        return nil
+    }
+    
+    var clonedNodes: [Int: Node] = [:]
+    
+     
+    func clone(_ node: Node) -> Node {
+        if let cloned = clonedNodes[node.val] {
+            return cloned
+        }
+        
+        let clonedNode = Node(node.val)
+        clonedNodes[node.val] = clonedNode
+        
+
+        for neighbor in node.neighbors {
+            if let neighbor = neighbor {
+                clonedNode.neighbors.append(clone(neighbor))
+            }
+        }
+        
+        return clonedNode
+    }
+    
+    return clone(node)
+}
+
+
