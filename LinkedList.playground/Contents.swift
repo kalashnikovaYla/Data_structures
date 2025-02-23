@@ -397,3 +397,51 @@ let second = ListNode(2, third)
 let first = ListNode(4, second)
 
 sortList(first)
+
+
+
+/*
+ You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
+
+ You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+ */
+func addTwoNumbers(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
+    var l1 = l1
+    var l2 = l2
+    var dummyResult: ListNode? = ListNode(0)
+    var current = dummyResult
+    var carry = 0
+    
+    while l1 != nil || l2 != nil {
+        var sum = carry + (l1?.val ?? 0) + (l2?.val ?? 0)
+        if sum > 9 {
+            current?.next = ListNode(sum%10)
+            carry = 1
+        } else {
+            carry = 0
+            current?.next = ListNode(sum)
+        }
+        l1 = l1?.next
+        l2 = l2?.next
+        current = current?.next
+    }
+    
+    if carry > 0 {
+        current?.next = ListNode(1)
+    }
+    return dummyResult?.next
+}
+
+var three = ListNode(3)
+var two = ListNode(4)
+var one = ListNode(2)
+one.next = two
+two.next = three
+
+ 
+var three1 = ListNode(4)
+var two1 = ListNode(6)
+var one1 = ListNode(5)
+one1.next = two1
+two1.next = three1
+addTwoNumbers(one, one1)
