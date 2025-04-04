@@ -81,7 +81,7 @@ func checkAnagram1(str1: String, str2: String) -> Bool {
     }
     
     for char in str2 {
-        dict[char, default: 0] += 1
+        dict[char, default: 0] -= 1
     }
   
     for (_, val) in dict {
@@ -91,6 +91,7 @@ func checkAnagram1(str1: String, str2: String) -> Bool {
     }
     return true
 }
+
 
 ///находит длину самой длинной подстроки в строке `s`, которая не содержит повторяющихся символов.
 
@@ -188,7 +189,9 @@ class MyGenericClass<Value> {
 
 
 extension MyGenericClass where Value == Int {
-    func doSomething () {}
+    func doSomething () {
+        print("do something")
+    }
 }
 
 //Optional Generic inferring
